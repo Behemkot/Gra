@@ -20,6 +20,7 @@ class Game(object):
 
         self.player = Player(self)
 
+    def run(self):
         while True:
             # wydarzenia
             for event in g.event.get():
@@ -45,4 +46,5 @@ class Game(object):
 
 
 if __name__ == "__main__":
-    Game()
+    game = Game()
+    game.run()
