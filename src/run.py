@@ -3,6 +3,7 @@ import sys
 from player import Player
 from platform import Platform
 from physics import World
+from camera import Camera
 
 class Game(object):
     def __init__(self):
@@ -17,6 +18,8 @@ class Game(object):
         # Inicjowanie
         g.init()
         self.screen = g.display.set_mode(self.resolution, g.NOFRAME)
+        self.camera = Camera(self.screen, 0, 0,
+                self.resolution[0], self.resolution[1])
 
         self.tps_clock = g.time.Clock()
         self.tps_delta = 0.0
