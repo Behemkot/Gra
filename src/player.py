@@ -5,7 +5,6 @@ from pygame.math import Vector2
 class Player(object):
     def __init__(self, game):
         self.game = game
-
         self.position_x = self.game.resolution[0]/2 - 25
         self.position_y = 350 - 50
         self.position = Vector2(self.position_x, self.position_y)
@@ -17,10 +16,10 @@ class Player(object):
 
         self.acceleration += Vector2(0, -self.game.speed)
 
-    def moveLeft(self):
+    def move_left(self):
         pass
 
-    def moveRight(self):
+    def move_right(self):
         pass
 
     def update(self):
@@ -30,9 +29,9 @@ class Player(object):
         if pressed[g.K_w]:
             self.jump()
         if pressed[g.K_a]:
-            self.moveLeft()
+            self.move_left()
         if pressed[g.K_d]:
-            self.moveRight()
+            self.move_right()
 
 
         # Fizyka

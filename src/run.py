@@ -1,7 +1,7 @@
 import pygame as g
 import sys
 from src.player import Player
-
+from src.platform import Platform
 
 class Game(object):
     def __init__(self):
@@ -19,6 +19,7 @@ class Game(object):
         self.tps_delta = 0.0
 
         self.player = Player(self)
+        self.platform = Platform(self, self.player)
 
     def run(self):
         while True:
@@ -47,4 +48,6 @@ class Game(object):
 
 if __name__ == "__main__":
     game = Game()
+    player = Player(game)
+    platform = Platform(game, player)
     game.run()

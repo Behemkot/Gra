@@ -14,4 +14,7 @@ class Platform(object):
         pass
 
     def draw(self):
-        pass
+        box = g.Rect(self.position_x, self.position_y, 10, 50)
+        g.draw.rect(self.game.screen, (255, 0, 0), box)
+
+
