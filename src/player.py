@@ -1,7 +1,7 @@
 import pygame as g
 from pygame.math import Vector2
 from physics import Body
-from physics import Rectangle
+from physics import Bbox
 
 
 class Player(Body):
@@ -14,11 +14,12 @@ class Player(Body):
 
         self.on_ground = False
 
-        shape = Rectangle(position_x, position_y, self.width, self.height)
-        super(Player, self).__init__(position_x, position_y, [shape], self.game.gravity, 0.8)
+        shape = Bbox(position_x, position_y, self.width, self.height)
+        super(Player, self).__init__(position_x, position_y, shape, self.game.gravity, 0.8)
 
     def jump(self):
         if self.on_ground:
+            self.velocity[1] = 0
             self.apply_force(Vector2(0, -self.game.jump_force))
             self.on_ground = False
 
