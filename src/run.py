@@ -19,7 +19,7 @@ class Game(object):
         self.tps_delta = 0.0
 
         self.player = Player(self)
-        self.platform = Platform(self, self.player)
+        self.platform = Platform(self)
 
     def run(self):
         while True:
@@ -44,10 +44,11 @@ class Game(object):
 
     def draw(self):
         self.player.draw()
+        self.platform.draw()
 
 
 if __name__ == "__main__":
     game = Game()
     player = Player(game)
-    platform = Platform(game, player)
+    platform = Platform(game)
     game.run()

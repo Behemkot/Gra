@@ -17,10 +17,10 @@ class Player(object):
         self.acceleration += Vector2(0, -self.game.speed)
 
     def move_left(self):
-        pass
+        self.game.platform.position_x += 2*self.game.speed
 
     def move_right(self):
-        pass
+        self.game.platform.position_x -= 2*self.game.speed
 
     def update(self):
 
