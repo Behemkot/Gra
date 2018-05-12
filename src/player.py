@@ -1,30 +1,31 @@
 import pygame as g
 from pygame.math import Vector2
+from physics import Body
 
 
-class Player(object):
+class Player(Body):
     def __init__(self, game):
         self.game = game
 
-        self.position_x = self.game.resolution[0]/2 - 25
-        self.position_y = 350 - 50
-        self.position = Vector2(self.position_x, self.position_y)
+        position_x = self.game.resolution[0]/2 - 25
+        position_y = 350 - 50
 
-        self.velocity = Vector2(0, 0)
-        self.acceleration = Vector2(0, 0)
+        self.on_ground = False
+
+        super(Player, self).__init__(position_x, position_y, [], self.game.gravity, 0.8)
 
     def jump(self):
-
-        self.acceleration += Vector2(0, -self.game.speed)
+        if self.on_ground:
+            self.apply_force(Vector2(0, -self.game.jump_force))
+            self.on_ground = False
 
     def moveLeft(self):
-        pass
+        self.apply_force(Vector2(-self.game.jump_force, 0))
 
     def moveRight(self):
-        pass
+        self.apply_force(Vector2(self.game.jump_force, 0))
 
-    def update(self):
-
+    def update(self, dt):
         # Input
         pressed = g.key.get_pressed()
         if pressed[g.K_w]:
@@ -34,14 +35,7 @@ class Player(object):
         if pressed[g.K_d]:
             self.moveRight()
 
-
-        # Fizyka
-        self.velocity *= 0.8
-        if self.position[1] < self.position_y:
-            self.velocity += Vector2(0, self.game.gravity)
-        self.velocity += self.acceleration
-        self.position += self.velocity
-        self.acceleration *= 0
+        super(Player, self).update(1)
 
     def draw(self):
         box = g.Rect(self.position[0], self.position[1], 50, 50)

@@ -1,6 +1,7 @@
 import pygame as g
 import sys
-from src.player import Player
+from player import Player
+from physics import World
 
 
 class Game(object):
@@ -8,7 +9,9 @@ class Game(object):
         # CONFIG
         self.resolution = (600, 400)
         self.tps = 60.0
-        self.speed = 4
+        self.jump_force = 1
+        self.move_speed = 1
+        self.max_speed = 1
         self.gravity = 1
 
         # Inicjowanie
@@ -19,6 +22,9 @@ class Game(object):
         self.tps_delta = 0.0
 
         self.player = Player(self)
+
+        self.world = World()
+        self.world.add_body(self.player)
 
     def run(self):
         while True:
@@ -39,7 +45,7 @@ class Game(object):
             g.display.update()
 
     def update(self):
-        self.player.update()
+        self.world.update(1)
 
     def draw(self):
         self.player.draw()
