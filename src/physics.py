@@ -29,10 +29,10 @@ class Rectangle(Shape):
 
     def collides(self, other):
         if isinstance(other, Rectangle):
-            return self.position[0] < other.position[0] + w \
-               and self.position[0] + w > other.position[0] \
-               and self.position[1] < other.position[1] + h \
-               and self.position[1] + w > other.position[1]
+            return self.position[0] < other.position[0] + other.w \
+               and self.position[0] + self.w > other.position[0] \
+               and self.position[1] < other.position[1] + other.h \
+               and self.position[1] + self.w > other.position[1]
         else:
             return False
 
@@ -44,14 +44,13 @@ class Body(object):
         self.gravity = Vector2(0, gravity)
         self.friction = friction
         self.shapes = shapes
+        self.static = False
+
+        for shape in shapes:
+            shape.body = self
 
     def update(self, dt):
-        self.position += self.velocity * dt
-        self.velocity[0] *= 1.0 - self.friction
-        self.velocity += (self.acceleration + self.gravity) * dt
-        self.acceleration *= 0
-
-        self.setpos()
+        pass
 
     def setpos(self, pos=None):
         if pos:
@@ -70,7 +69,7 @@ class Body(object):
         else:
             return iter()
 
-class Colision(object):
+class Collision(object):
     def __init__(self, a, b):
         self.a = a
         self.b = b
@@ -91,14 +90,25 @@ class World(object):
 
     def update(self, dt):
         for body in self.bodies:
-            position = body.position
+            body.velocity += (body.acceleration + body.gravity) * dt
+
+            for dim in [0, 1]:
+                body.position[dim] += body.velocity[dim] * dt
+                body.setpos()
+
+                collisions = iter(body.collisions(other) for other in self.bodies if body != other)
+                collides = False
+
+                for cs in collisions:
+                    for collision in cs:
+                        collision.do()
+                        collides = True
+
+                if collides:
+                    body.position[dim] -= body.velocity[dim] * dt
+                    body.setpos()
+
+            body.velocity[0] *= 1.0 - body.friction
+            body.acceleration *= 0
+
             body.update(dt)
-            collisions = iter(body.collisions(other) for other in self.bodies if body != other)
-            collisions = [collision for collision in collisions]
-
-            for collision in collisions:
-                collision.do()
-
-            if len(collisions) > 0:
-                body.setpos(position)
-

@@ -1,19 +1,36 @@
 import pygame as g
+from physics import Body
+from physics import Rectangle
+from player import Player
 
 
-class Platform(object):
+def chandler(collision):
+    if isinstance(collision.a.body, Player):
+        collision.a.body.on_ground = True
+    elif isinstance(collision.b.body, Player):
+        collision.b.body.on_ground = True
+
+class Platform(Body):
     def __init__(self, game):
         self.game = game
 
         # pierwsza platforma
-        self.position_x = 500
-        self.position_y = self.game.player.position_y - 60
+        position_x = 100
+        position_y = 350
+        self.width = 300
+        self.height = 50
 
-    def update(self):
+        shape = Rectangle(position_x, position_y, self.width, self.height)
+        shape.on_collide(chandler)
+        super(Platform, self).__init__(position_x, position_y, [shape])
+
+        self.static = True
+
+    def update(self, dt):
         pass
 
     def draw(self):
-        box = g.Rect(self.position_x, self.position_y, 100, 50)
+        box = g.Rect(self.position[0], self.position[1], self.width, self.height)
         g.draw.rect(self.game.screen, (255, 0, 0), box)
 
 
