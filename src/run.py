@@ -3,7 +3,6 @@ import sys
 from player import Player
 from physics import World
 
-
 class Game(object):
     def __init__(self):
         # CONFIG
@@ -22,6 +21,7 @@ class Game(object):
         self.tps_delta = 0.0
 
         self.player = Player(self)
+        self.platform = Platform(self)
 
         self.world = World()
         self.world.add_body(self.player)
@@ -49,8 +49,11 @@ class Game(object):
 
     def draw(self):
         self.player.draw()
+        self.platform.draw()
 
 
 if __name__ == "__main__":
     game = Game()
+    player = Player(game)
+    platform = Platform(game)
     game.run()

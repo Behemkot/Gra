@@ -6,7 +6,6 @@ from physics import Body
 class Player(Body):
     def __init__(self, game):
         self.game = game
-
         position_x = self.game.resolution[0]/2 - 25
         position_y = 350 - 50
 
@@ -31,9 +30,9 @@ class Player(Body):
         if pressed[g.K_w]:
             self.jump()
         if pressed[g.K_a]:
-            self.moveLeft()
+            self.move_left()
         if pressed[g.K_d]:
-            self.moveRight()
+            self.move_right()
 
         super(Player, self).update(1)
 
