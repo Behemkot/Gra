@@ -1,6 +1,6 @@
 import pygame as g
 from physics import Body
-from physics import Rectangle
+from physics import Bbox
 from player import Player
 
 
@@ -20,9 +20,9 @@ class Platform(Body):
         self.width = 300
         self.height = 50
 
-        shape = Rectangle(position_x, position_y, self.width, self.height)
+        shape = Bbox(position_x, position_y, self.width, self.height)
         shape.on_collide(chandler)
-        super(Platform, self).__init__(position_x, position_y, [shape])
+        super(Platform, self).__init__(position_x, position_y, shape)
 
         self.static = True
 
