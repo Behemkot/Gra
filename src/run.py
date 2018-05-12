@@ -1,7 +1,8 @@
 import pygame as g
 import sys
-from player import Player
-from physics import World
+from src.player import Player
+from src.platform import Platform
+from src.physics import World
 
 class Game(object):
     def __init__(self):

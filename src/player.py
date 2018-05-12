@@ -1,27 +1,27 @@
 import pygame as g
 from pygame.math import Vector2
-from physics import Body
+from src.physics import Body
 
 
 class Player(Body):
     def __init__(self, game):
         self.game = game
-        position_x = self.game.resolution[0]/2 - 25
-        position_y = 350 - 50
+        self.position_x = self.game.resolution[0]/2 - 25
+        self.position_y = 350 - 50
 
         self.on_ground = False
 
-        super(Player, self).__init__(position_x, position_y, [], self.game.gravity, 0.8)
+        super(Player, self).__init__(self.position_x, self.position_y, [], self.game.gravity, 0.8)
 
     def jump(self):
         if self.on_ground:
             self.apply_force(Vector2(0, -self.game.jump_force))
             self.on_ground = False
 
-    def moveLeft(self):
+    def move_left(self):
         self.apply_force(Vector2(-self.game.jump_force, 0))
 
-    def moveRight(self):
+    def move_right(self):
         self.apply_force(Vector2(self.game.jump_force, 0))
 
     def update(self, dt):
