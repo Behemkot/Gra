@@ -45,5 +45,4 @@ class Player(Body):
             self.velocity[0] = -self.game.max_speed
 
     def draw(self):
-        box = g.Rect(self.position[0], self.position[1], self.width, self.height)
-        g.draw.ellipse(self.game.screen, (0, 255, 0), box)
+        self.game.camera.draw(g.draw.ellipse, (0, 255, 0), self.position, (self.width, self.height))

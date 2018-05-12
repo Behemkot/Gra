@@ -30,7 +30,4 @@ class Platform(Body):
         pass
 
     def draw(self):
-        box = g.Rect(self.position[0], self.position[1], self.width, self.height)
-        g.draw.rect(self.game.screen, (255, 0, 0), box)
-
-
+        self.game.camera.draw(g.draw.rect, (255, 0, 0), self.position, (self.width, self.height))
