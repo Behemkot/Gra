@@ -16,12 +16,6 @@ class Enemy(Body):
         shape = Bbox(x, y, self.width, self.height)
         super(Enemy, self).__init__(x, y, shape, self.game.gravity, 0.8)
 
-    def jump(self):
-        if self.on_ground:
-            self.velocity[1] = 0
-            self.apply_force(Vector2(0, -self.game.jump_force))
-            self.on_ground = False
-
     def move(self):
         self.apply_force(Vector2(self.moving * self.game.move_speed, 0))
 

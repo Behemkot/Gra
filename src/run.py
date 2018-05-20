@@ -10,7 +10,7 @@ from camera import Camera
 class Game(object):
     def __init__(self):
         # CONFIG
-        self.resolution = (600, 400)
+        self.resolution = (1200, 800)
         self.tps = 60.0
         self.jump_force = 45000
         self.move_speed = 12000
@@ -20,7 +20,7 @@ class Game(object):
         self.platform_width = 300
         self.platform_height = 50
 
-        platform_position = Vector2(100, 350)
+        platform_position = Vector2(100, self.resolution[1] - self.platform_height)
         self.last_platform = platform_position
 
         # Inicjowanie
@@ -37,7 +37,7 @@ class Game(object):
         self.world = World()
         self.world.add_body(self.player)
         self.world.add_body(Platform(self, self.last_platform))
-        self.world.add_body(Enemy(120, 300, self))
+
 
     def run(self):
         while True:
@@ -62,6 +62,7 @@ class Game(object):
             self.last_platform[0] += 400
             self.last_platform[1] -= 100
             self.world.add_body(Platform(self, self.last_platform))
+            self.world.add_body(Enemy(self.last_platform[0] + 20, self.last_platform[1] - 50, self))
 
         self.world.update(dt)
 
