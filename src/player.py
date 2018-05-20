@@ -24,9 +24,11 @@ class Player(Body):
             self.on_ground = False
 
     def moveLeft(self):
+        self.game.camera.translate(self.position[0] - self.game.resolution[0] / 2, 0)
         self.apply_force(Vector2(-self.game.move_speed, 0))
 
     def moveRight(self):
+        self.game.camera.translate(self.position[0] - self.game.resolution[0] / 2, 0)
         self.apply_force(Vector2(self.game.move_speed, 0))
 
     def update(self, dt):
