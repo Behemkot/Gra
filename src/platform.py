@@ -22,7 +22,7 @@ class Platform(Body):
         self.game = game
         self.position = pos
         self.width = game.platform_width
-        self.heigth = game.platform_height
+        self.height = game.platform_height
 
         shape = Bbox(self.position[0], self.position[1], self.width, self.height)
         shape.on_collide(chandler)
