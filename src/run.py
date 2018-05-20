@@ -10,7 +10,7 @@ from camera import Camera
 class Game(object):
     def __init__(self):
         # CONFIG
-        self.resolution = (1200, 800)
+        self.resolution = (1366, 768)
         self.tps = 60.0
         self.jump_force = 45000
         self.move_speed = 12000
@@ -25,7 +25,7 @@ class Game(object):
 
         # Inicjowanie
         g.init()
-        self.screen = g.display.set_mode(self.resolution, g.NOFRAME)
+        self.screen = g.display.set_mode(self.resolution, g.FULLSCREEN)
         self.camera = Camera(self.screen, 0, 0,
                 self.resolution[0], self.resolution[1])
 
@@ -58,7 +58,7 @@ class Game(object):
             g.display.update()
 
     def update(self, dt):
-        if self.camera.position[0] > self.last_platform[0] - self.platform_width:
+        if self.camera.position[0] + self.resolution[0] > self.last_platform[0] - self.platform_width:
             self.last_platform[0] += 400
             self.last_platform[1] -= 100
             self.world.add_body(Platform(self, self.last_platform))
