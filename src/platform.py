@@ -21,8 +21,10 @@ class Platform(Body):
     def __init__(self, game, pos):
         self.game = game
         self.position = pos
+        self.width = game.platform_width
+        self.heigth = game.platform_height
 
-        shape = Bbox(self.position[0], self.position[1], self.game.platform_width, self.game.platform_height)
+        shape = Bbox(self.position[0], self.position[1], self.width, self.height)
         shape.on_collide(chandler)
         super(Platform, self).__init__(self.position[0], self.position[1], shape)
 
@@ -32,4 +34,4 @@ class Platform(Body):
         pass
 
     def draw(self):
-        self.game.camera.draw(g.draw.rect, (255, 0, 0), self.position, (self.game.platform_width, self.game.platform_height))
+        self.game.camera.draw(g.draw.rect, (255, 0, 0), self.position, (self.width, self.height))
