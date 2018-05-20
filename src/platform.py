@@ -16,6 +16,12 @@ def chandler(collision):
         collision.a.body.platform = collision.b.body
     elif isinstance(collision.b.body, Enemy):
         collision.b.body.platform = collision.a.body
+         
+def joey(collision):
+    if isinstance(collision.a.body, Player):
+        collision.a.body.on_ground = False
+    elif isinstance(collision.b.body, Player):
+        collision.b.body.on_ground = False
 
 class Platform(Body):
     def __init__(self, game, pos):
@@ -25,8 +31,8 @@ class Platform(Body):
         self.height = game.platform_height
 
         shape = Bbox(self.position[0], self.position[1], self.width, self.height)
-        shape.on_collide(chandler)
         super(Platform, self).__init__(self.position[0], self.position[1], shape)
+        shape.on_collide(chandler, joey)
 
         self.static = True
 
