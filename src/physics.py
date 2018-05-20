@@ -88,8 +88,11 @@ class World(object):
         self.bodies.append(body)
 
     def update(self, dt):
-        for body in self.bodies:
+        remove = []
+
+        for (i, body) in enumerate(self.bodies):
             if not body.static:
+
                 body.velocity += (body.acceleration + body.gravity) * dt
 
                 for dim in [0, 1]:
