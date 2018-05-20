@@ -7,7 +7,7 @@ class Camera(object):
         self.screen = screen
 
     def translate(self, x, y):
-        self.position += Vector2(x, y)
+        self.position = Vector2(x, y)
 
     def draw(self, func, color, pos, size):
         box = g.Rect(pos[0] - self.position[0], pos[1] - self.position[1],

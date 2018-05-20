@@ -1,5 +1,6 @@
 import pygame as g
 import sys
+from pygame.math import Vector2
 from player import Player
 from enemy import Enemy
 from platform import Platform
@@ -16,6 +17,12 @@ class Game(object):
         self.max_speed = 20000
         self.gravity = 1800
 
+        self.platform_width = 300
+        self.platform_height = 50
+
+        platform_position = Vector2(100, 350)
+        self.last_platform = platform_position
+
         # Inicjowanie
         g.init()
         self.screen = g.display.set_mode(self.resolution, g.NOFRAME)
@@ -29,7 +36,7 @@ class Game(object):
 
         self.world = World()
         self.world.add_body(self.player)
-        self.world.add_body(Platform(self))
+        self.world.add_body(Platform(self, self.last_platform))
         self.world.add_body(Enemy(120, 300, self))
 
     def run(self):
@@ -51,6 +58,11 @@ class Game(object):
             g.display.update()
 
     def update(self, dt):
+        if self.camera.position[0] > self.last_platform[0] - self.platform_width:
+            self.last_platform[0] += 400
+            self.last_platform[1] -= 100
+            self.world.add_body(Platform(self, self.last_platform))
+
         self.world.update(dt)
 
     def draw(self):

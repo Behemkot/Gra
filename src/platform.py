@@ -1,4 +1,5 @@
 import pygame as g
+from pygame.math import Vector2
 from physics import Body
 from physics import Bbox
 from player import Player
@@ -17,18 +18,13 @@ def chandler(collision):
         collision.b.body.platform = collision.a.body
 
 class Platform(Body):
-    def __init__(self, game):
+    def __init__(self, game, pos):
         self.game = game
+        self.position = pos
 
-        # pierwsza platforma
-        position_x = 100
-        position_y = 350
-        self.width = 300
-        self.height = 50
-
-        shape = Bbox(position_x, position_y, self.width, self.height)
+        shape = Bbox(self.position[0], self.position[1], self.game.platform_width, self.game.platform_height)
         shape.on_collide(chandler)
-        super(Platform, self).__init__(position_x, position_y, shape)
+        super(Platform, self).__init__(self.position[0], self.position[1], shape)
 
         self.static = True
 
@@ -36,4 +32,4 @@ class Platform(Body):
         pass
 
     def draw(self):
-        self.game.camera.draw(g.draw.rect, (255, 0, 0), self.position, (self.width, self.height))
+        self.game.camera.draw(g.draw.rect, (255, 0, 0), self.position, (self.game.platform_width, self.game.platform_height))
