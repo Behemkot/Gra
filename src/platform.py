@@ -2,6 +2,7 @@ import pygame as g
 from physics import Body
 from physics import Bbox
 from player import Player
+from enemy import Enemy
 
 
 def chandler(collision):
@@ -9,6 +10,11 @@ def chandler(collision):
         collision.a.body.on_ground = True
     elif isinstance(collision.b.body, Player):
         collision.b.body.on_ground = True
+
+    if isinstance(collision.a.body, Enemy):
+        collision.a.body.platform = collision.b.body
+    elif isinstance(collision.b.body, Enemy):
+        collision.b.body.platform = collision.a.body
 
 class Platform(Body):
     def __init__(self, game):

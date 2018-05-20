@@ -1,6 +1,7 @@
 import pygame as g
 import sys
 from player import Player
+from enemy import Enemy
 from platform import Platform
 from physics import World
 from camera import Camera
@@ -29,6 +30,7 @@ class Game(object):
         self.world = World()
         self.world.add_body(self.player)
         self.world.add_body(Platform(self))
+        self.world.add_body(Enemy(120, 300, self))
 
     def run(self):
         while True:
