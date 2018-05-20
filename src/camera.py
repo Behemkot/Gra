@@ -7,6 +7,9 @@ class Camera(object):
         self.screen = screen
 
     def translate(self, x, y):
+        self.position += Vector2(x, y)
+
+    def set_pos(self, x, y):
         self.position = Vector2(x, y)
 
     def draw(self, func, color, pos, size):
