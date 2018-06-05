@@ -10,7 +10,8 @@ from camera import Camera
 
 class Game(object):
     def __init__(self):
-        # CONFIG
+    # CONFIG
+        # OGÓLNY
         self.resolution = (1366, 768)
         self.tps = 60.0
         self.jump_force = 45000
@@ -18,6 +19,7 @@ class Game(object):
         self.max_speed = 20000
         self.gravity = 1800
 
+        # PLATFORMY
         self.platform_width = 300
         self.platform_height = 50
         self.platform_space = 130
@@ -26,6 +28,10 @@ class Game(object):
 
         platform_position = Vector2(100, self.platform_range[0])
         self.last_platform = platform_position
+
+        # WROGOWIE
+        self.enemy_chance = 0.5
+        self.last_platform_enemy = False
 
         # Inicjowanie
         g.init()
@@ -78,7 +84,21 @@ class Game(object):
                 pos = random.randint(0, 1)
                 self.last_platform[1] += self.platform_space
             self.world.add_body(Platform(self, self.last_platform))
-            self.world.add_body(Enemy(self.last_platform[0] + 20, self.last_platform[1] - 50, self))
+
+            is_enemy = random.random()
+            if self.last_platform_enemy:
+                self.enemy_chance = 0.3
+            else:
+                self.enemy_chance = 0.8
+
+            if is_enemy < self.enemy_chance:
+                self.world.add_body(Enemy(self.last_platform[0] + random.randint(20,
+                                          self.platform_width - 20),
+                                          self.last_platform[1] - 50,
+                                          self))
+                self.last_platform_enemy = True
+            else:
+                self.last_platform_enemy = False
 
         self.world.update(dt)
 
