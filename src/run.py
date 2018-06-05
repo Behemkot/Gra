@@ -1,5 +1,6 @@
 import pygame as g
 import sys
+import os
 import random
 from pygame.math import Vector2
 from player import Player
@@ -35,7 +36,9 @@ class Game(object):
 
         # Inicjowanie
         g.init()
-        self.screen = g.display.set_mode(self.resolution)
+        self.background = g.image.load(os.path.join('models', 'bground.png'))
+
+        self.screen = g.display.set_mode(self.resolution, g.FULLSCREEN)
         self.camera = Camera(self.screen, 0, 0,
                 self.resolution[0], self.resolution[1])
 
