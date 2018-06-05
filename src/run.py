@@ -1,5 +1,6 @@
 import pygame as g
 import sys
+import random
 from pygame.math import Vector2
 from player import Player
 from enemy import Enemy
@@ -19,8 +20,11 @@ class Game(object):
 
         self.platform_width = 300
         self.platform_height = 50
+        self.platform_space = 130
+        platform_max = (self.resolution[1] % self.platform_space) + 80
+        self.platform_range = [self.resolution[1] - self.platform_height, platform_max]
 
-        platform_position = Vector2(100, self.resolution[1] - self.platform_height)
+        platform_position = Vector2(100, self.platform_range[0])
         self.last_platform = platform_position
 
         # Inicjowanie
@@ -58,9 +62,21 @@ class Game(object):
             g.display.update()
 
     def update(self, dt):
+        # generowanie platform
         if self.camera.position[0] + self.resolution[0] > self.last_platform[0] - self.platform_width:
             self.last_platform[0] += 400
-            self.last_platform[1] -= 100
+            if self.last_platform[1] > self.platform_range[1] and self.last_platform[1] < self.platform_range[0]:
+                pos = random.randint(-1, 1)
+                if pos == 0:
+                    self.last_platform[0] += 100
+                else:
+                    self.last_platform[1] += pos*self.platform_space
+            elif self.last_platform[1] == self.platform_range[0]:
+                #pos = random.randint(0, 1)
+                self.last_platform[1] -= self.platform_space
+            else:
+                pos = random.randint(0, 1)
+                self.last_platform[1] += self.platform_space
             self.world.add_body(Platform(self, self.last_platform))
             self.world.add_body(Enemy(self.last_platform[0] + 20, self.last_platform[1] - 50, self))
 
