@@ -35,7 +35,7 @@ class Game(object):
 
         # Inicjowanie
         g.init()
-        self.screen = g.display.set_mode(self.resolution, g.FULLSCREEN)
+        self.screen = g.display.set_mode(self.resolution)
         self.camera = Camera(self.screen, 0, 0,
                 self.resolution[0], self.resolution[1])
 
