@@ -1,4 +1,5 @@
 import pygame as g
+import random
 from pygame.math import Vector2
 from physics import Body
 from physics import Bbox
@@ -11,7 +12,9 @@ class Enemy(Body):
         self.height = 50
 
         self.on_ground = False
-        self.moving = 1
+
+        dir = random.randint(0, 1)
+        self.moving = dir
 
         shape = Bbox(x, y, self.width, self.height)
         super(Enemy, self).__init__(x, y, shape, self.game.gravity, 0.8)

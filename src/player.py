@@ -55,6 +55,7 @@ class Player(Body):
         if self.on_ground:
             self.velocity[1] = 0
             self.apply_force(Vector2(0, -self.game.jump_force))
+            self.papers += 1    # not todo
             self.on_ground = False
 
     def moveLeft(self):

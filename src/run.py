@@ -6,12 +6,13 @@ from pygame.math import Vector2
 from player import Player
 from enemy import Enemy
 from platform import Platform
+from paper import Paper
 from physics import World
 from camera import Camera
 
 class Game(object):
     def __init__(self):
-    # CONFIG
+        # CONFIG
         # OGÓLNY
         self.resolution = (1366, 768)
         self.tps = 60.0
@@ -19,6 +20,7 @@ class Game(object):
         self.move_speed = 12000
         self.max_speed = 20000
         self.gravity = 1800
+        self.time = 120
 
         # PLATFORMY
         self.platform_width = 300
@@ -34,12 +36,16 @@ class Game(object):
         self.enemy_chance = 0.5
         self.last_platform_enemy = False
 
+        # NOTATKI
+        self.notes_chance = 0.1
+        self.last_platform_notes = False
+
         # Inicjowanie
         g.init()
         self.background = g.image.load(os.path.join('models', 'bground.png'))
 
         self.screen = g.display.set_mode(self.resolution, g.FULLSCREEN)
-        self.camera = Camera(self.screen, 0, 0,
+        self.camera = Camera(self.screen, 250 - self.resolution[0] / 2, 0,
                 self.resolution[0], self.resolution[1])
 
         self.tps_clock = g.time.Clock()
@@ -65,8 +71,19 @@ class Game(object):
                 self.update(self.tps_delta)
                 self.tps_delta -= 1 / self.tps
 
+
             # rysowanie
             self.screen.fill((0, 0, 0))
+            # wyswietlane wyniku
+            text_font = g.font.Font(g.font.get_default_font(), 40)
+            text_color = (119,136,153)  # szary
+            score_text = text_font.render("SCORE: " + str(self.player.papers), True, text_color)
+            self.screen.blit(score_text, (20, 20))
+
+            # wyświetlanie czasu
+            time_text = text_font.render('TIME: ' + str(self.time), True, text_color)
+            self.screen.blit(time_text, (self.resolution[0] - 220, 20))
+
             self.draw()
             g.display.update()
 
@@ -84,24 +101,38 @@ class Game(object):
                 #pos = random.randint(0, 1)
                 self.last_platform[1] -= self.platform_space
             else:
-                pos = random.randint(0, 1)
+                #pos = random.randint(0, 1)
                 self.last_platform[1] += self.platform_space
             self.world.add_body(Platform(self, self.last_platform))
 
+            # generowanie wrogow
             is_enemy = random.random()
             if self.last_platform_enemy:
                 self.enemy_chance = 0.3
             else:
-                self.enemy_chance = 0.8
+                self.enemy_chance += 0.2
 
             if is_enemy < self.enemy_chance:
                 self.world.add_body(Enemy(self.last_platform[0] + random.randint(20,
-                                          self.platform_width - 20),
+                                          self.platform_width - 70),
                                           self.last_platform[1] - 50,
                                           self))
                 self.last_platform_enemy = True
             else:
                 self.last_platform_enemy = False
+
+            # generowanie notatek
+            if self.last_platform_enemy:
+                self.notes_chance = 0.3
+            elif not self.last_platform_notes:
+                self.notes_chance += 0.1
+
+            is_note = random.random()
+            if is_note < self.notes_chance:
+                self.world.add_body(Paper(self.last_platform[0] + random.randint(20, self.platform_width - 70),
+                                          self.last_platform[1] - 50,
+                                          self))
+                self.notes_chance = 0.0
 
         self.world.update(dt)
 
