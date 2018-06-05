@@ -7,8 +7,8 @@ from physics import Bbox
 class Player(Body):
     def __init__(self, game):
         self.game = game
-        position_x = self.game.resolution[0]/2 - 25
-        position_y = 250
+        position_x = 250
+        position_y = self.game.resolution[1] - 100
         self.width = 50
         self.height = 50
 
