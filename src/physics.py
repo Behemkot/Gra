@@ -93,14 +93,21 @@ class Collision(object):
 class World(object):
     def __init__(self, bodies=[]):
         self.bodies = bodies
+        self.kill = []
+        self.updating = False
 
     def add_body(self, body):
         self.bodies.append(body)
 
     def remove(self, body):
-        self.bodies.remove(body)
+        if not self.updating:
+            self.bodies.pop(body)
+        else:
+            self.kill.append(body)
 
     def update(self, dt):
+        self.updating = True
+
         for (i, body) in enumerate(self.bodies):
             if not body.static:
                 body.velocity += (body.acceleration + body.gravity) * dt
@@ -139,3 +146,8 @@ class World(object):
                 body.acceleration *= 0
 
                 body.update(dt)
+
+        for body in self.kill:
+            self.bodies.remove(body)
+
+        self.updating = False
