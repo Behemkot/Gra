@@ -12,6 +12,8 @@ class Paper(Body):
         self.static = True
 
         shape = Bbox(x, y, self.width, self.height)
+        shape.elayers = 0b010
+        shape.ilayers = 0b001
         super(Paper, self).__init__(x, y, shape, self.game.gravity, 0.8)
 
     def draw(self):

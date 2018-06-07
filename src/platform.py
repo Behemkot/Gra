@@ -31,6 +31,8 @@ class Platform(Body):
         self.height = game.platform_height
 
         shape = Bbox(self.position[0], self.position[1], self.width, self.height)
+        shape.elayers = 0b001
+        shape.ilayers = 0b111
         super(Platform, self).__init__(self.position[0], self.position[1], shape)
         shape.on_collide(chandler, joey)
 

@@ -51,6 +51,8 @@ class Player(Body):
         self.on_ground = False
 
         shape = Bbox(position_x, position_y, self.width, self.height)
+        shape.elayers = 0b100
+        shape.ilayers = 0b001
         super(Player, self).__init__(position_x, position_y, shape, self.game.gravity, 0.8)
         shape.on_collide(chandler)
 

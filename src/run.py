@@ -44,9 +44,9 @@ class Game(object):
         # Inicjowanie
         g.init()
         self.text_font = g.font.Font(g.font.get_default_font(), 40)
-        self.background = g.image.load(os.path.join('models', 'bground.png'))
+        #self.background = g.image.load(os.path.join('models', 'bground.png'))
 
-        self.screen = g.display.set_mode(self.resolution, g.FULLSCREEN)
+        self.screen = g.display.set_mode(self.resolution)
         self.camera = Camera(self.screen, 250 - self.resolution[0] / 2, 0,
                 self.resolution[0], self.resolution[1])
 

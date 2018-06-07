@@ -17,6 +17,8 @@ class Enemy(Body):
         self.moving = dir
 
         shape = Bbox(x, y, self.width, self.height)
+        shape.elayers = 0b010
+        shape.ilayers = 0b001
         super(Enemy, self).__init__(x, y, shape, self.game.gravity, 0.8)
 
     def move(self):

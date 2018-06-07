@@ -1,5 +1,11 @@
 import itertools
 from pygame.math import Vector2
+from enum import Enum
+
+class Intersects(Enum):
+    No = 0
+    Yes = 1
+    NA = 2
 
 class Bbox(object):
     def __init__(self, x, y, w, h, on_collide=None, on_uncollide=None):
@@ -7,16 +13,24 @@ class Bbox(object):
         self.position = Vector2(x, y)
         self.w = w
         self.h = h
+        self.elayers = 0
+        self.ilayers = 0
 
     def setpos(self, pos):
         self.position = pos
 
     def collides(self, other):
         if isinstance(other, Bbox):
-            return self.position[0] < other.position[0] + other.w \
-               and self.position[0] + self.w > other.position[0] \
-               and self.position[1] < other.position[1] + other.h \
-               and self.position[1] + self.h > other.position[1]
+            if self.position[0] < other.position[0] + other.w \
+                and self.position[0] + self.w > other.position[0] \
+                and self.position[1] < other.position[1] + other.h \
+                and self.position[1] + self.h > other.position[1]:
+                if self.ilayers & other.elayers == 0 or \
+                    self.elayers & other.ilayers == 0:
+                    return Intersects.NA
+                return Intersects.Yes
+            else:
+                return Intersects.No
         else:
             return False
 
@@ -71,10 +85,11 @@ class Body(object):
         return self.shape.intersection(other.shape)
 
 class Collision(object):
-    def __init__(self, a, b):
+    def __init__(self, a, b, intersects):
         self.intersection = a.body.intersection(b.body)
         self.a = a
         self.b = b
+        self.intersects = intersects
 
     def do_begin(self):
         if self.a.collision_begin:
@@ -118,9 +133,12 @@ class World(object):
                     body.setpos()
 
                     bodies = iter(other for other in self.bodies if body != other)
-                    collisions = iter(Collision(body.shape, other.shape) for other in bodies if body.collides(other))
+                    collisions = iter(Collision(body.shape, other.shape, body.collides(other)) for other in bodies)
 
                     for collision in collisions:
+                        if collision.intersects == Intersects.No:
+                            continue
+
                         other = collision.b.body
                         colliding[other] = True
 
@@ -128,9 +146,11 @@ class World(object):
                             body.colliding[other] = collision
                             other.colliding[body] = collision
                             collision.do_begin()
-                        body.position[dim] -= collision.intersection[dim]
-                        body.velocity[dim] = 0
-                        body.setpos()
+
+                        if collision.intersects == Intersects.Yes:
+                            body.position[dim] -= collision.intersection[dim]
+                            body.velocity[dim] = 0
+                            body.setpos()
 
                 remove = []
                 for other, collision in body.colliding.items():
@@ -149,5 +169,7 @@ class World(object):
 
         for body in self.kill:
             self.bodies.remove(body)
+
+        self.kill = []
 
         self.updating = False
