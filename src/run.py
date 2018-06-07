@@ -21,6 +21,7 @@ class Game(object):
         self.max_speed = 20000
         self.gravity = 1800
         self.time = 120
+        self.text_color = (119, 136, 153)  # szary
 
         # PLATFORMY
         self.platform_width = 300
@@ -42,6 +43,7 @@ class Game(object):
 
         # Inicjowanie
         g.init()
+        self.text_font = g.font.Font(g.font.get_default_font(), 40)
         self.background = g.image.load(os.path.join('models', 'bground.png'))
 
         self.screen = g.display.set_mode(self.resolution, g.FULLSCREEN)
@@ -50,6 +52,7 @@ class Game(object):
 
         self.tps_clock = g.time.Clock()
         self.tps_delta = 0.0
+        self.sec = 0.0
 
         self.player = Player(self)
 
@@ -72,22 +75,33 @@ class Game(object):
                 self.tps_delta -= 1 / self.tps
 
 
-            # rysowanie
+            # Tło
+            #self.screen.blit(self.background, (0, 0))
             self.screen.fill((0, 0, 0))
+
             # wyswietlane wyniku
-            text_font = g.font.Font(g.font.get_default_font(), 40)
-            text_color = (119,136,153)  # szary
-            score_text = text_font.render("SCORE: " + str(self.player.papers), True, text_color)
+            score_text = self.text_font.render("SCORE: " + str(self.player.papers), True, self.text_color)
             self.screen.blit(score_text, (20, 20))
 
             # wyświetlanie czasu
-            time_text = text_font.render('TIME: ' + str(self.time), True, text_color)
+            time_text = self.text_font.render('TIME: ' + str(self.time), True, self.text_color)
             self.screen.blit(time_text, (self.resolution[0] - 220, 20))
+
+            # wyświetlanie życia
+            health_text = self.text_font.render('HP: ' + str(self.player.health), True, self.text_color)
+            self.screen.blit(health_text, (self.resolution[0] / 2 - 50, 20))
 
             self.draw()
             g.display.update()
 
+
     def update(self, dt):
+        # TIMER
+        self.sec += dt
+        if self.sec >= 1.0:
+            self.time -= 1
+            self.sec = 0.0
+
         # generowanie platform
         if self.camera.position[0] + self.resolution[0] > self.last_platform[0] - self.platform_width:
             self.last_platform[0] += 400
@@ -104,6 +118,8 @@ class Game(object):
                 #pos = random.randint(0, 1)
                 self.last_platform[1] += self.platform_space
             self.world.add_body(Platform(self, self.last_platform))
+
+
 
             # generowanie wrogow
             is_enemy = random.random()

@@ -97,6 +97,9 @@ class World(object):
     def add_body(self, body):
         self.bodies.append(body)
 
+    def remove(self, body):
+        self.bodies.remove(body)
+
     def update(self, dt):
         for (i, body) in enumerate(self.bodies):
             if not body.static:

@@ -14,25 +14,28 @@ def chandler(collision):
     if isinstance(collision.a.body, Enemy):
         player = collision.b.body
         bounce = Vector2(collision.intersection[0], collision.intersection[1])
+        player.health -= 1
     elif isinstance(collision.b.body, Enemy):
         player = collision.a.body
         bounce = Vector2(-collision.intersection[0], -collision.intersection[1])
+        player.health -= 1
     if player:
         if player.invincible <= 0:
             player.health -= 1
             player.apply_force(bounce)
-            player.invincible = INVINCIBILITY 
+            player.invincible = INVINCIBILITY
 
     if isinstance(collision.a.body, Paper):
         player = collision.b.body
         paper = collision.a.body
-        player.game.world.remove(paper) # todo
+        player.game.world.remove(paper)
         player.papers += 1
     elif isinstance(collision.b.body, Paper):
         player = collision.a.body
         paper = collision.b.body
-        player.game.world.remove(paper) # todo
+        player.game.world.remove(paper)
         player.papers += 1
+
 
 class Player(Body):
     def __init__(self, game):
@@ -55,7 +58,6 @@ class Player(Body):
         if self.on_ground:
             self.velocity[1] = 0
             self.apply_force(Vector2(0, -self.game.jump_force))
-            self.papers += 1    # not todo
             self.on_ground = False
 
     def moveLeft(self):
@@ -85,4 +87,7 @@ class Player(Body):
             self.invincible -= dt
 
     def draw(self):
-        self.game.camera.draw(g.draw.ellipse, (0, 255, 0), self.position, (self.width, self.height))
+        if self.invincible > 0:
+            self.game.camera.draw(g.draw.ellipse, (0, 100, 0), self.position, (self.width, self.height))
+        else:
+            self.game.camera.draw(g.draw.ellipse, (0, 255, 0), self.position, (self.width, self.height))
