@@ -6,7 +6,7 @@ from enemy import Enemy
 from paper import Paper
 
 
-INVINCIBILITY = 1500 # 1.5s
+INVINCIBILITY = 1.5 # 1.5s
 
 def chandler(collision):
     player = None
@@ -14,11 +14,9 @@ def chandler(collision):
     if isinstance(collision.a.body, Enemy):
         player = collision.b.body
         bounce = Vector2(collision.intersection[0], collision.intersection[1])
-        player.health -= 1
     elif isinstance(collision.b.body, Enemy):
         player = collision.a.body
         bounce = Vector2(-collision.intersection[0], -collision.intersection[1])
-        player.health -= 1
     if player:
         if player.invincible <= 0:
             player.health -= 1
