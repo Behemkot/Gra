@@ -20,9 +20,7 @@ class Game(object):
         self.move_speed = 12000
         self.max_speed = 20000
         self.gravity = 1800
-        self.time = 120
         self.text_color = (119, 136, 153)  # szary
-        self.game_state = 'RUN'
 
         # PLATFORMY
         self.platform_width = 300
@@ -31,33 +29,41 @@ class Game(object):
         platform_max = (self.resolution[1] % self.platform_space) + 80
         self.platform_range = [self.resolution[1] - self.platform_height, platform_max]
 
-        platform_position = Vector2(100, self.platform_range[0])
-        self.last_platform = platform_position
-
-        # WROGOWIE
         self.enemy_chance = 0.5
-        self.last_platform_enemy = False
-
-        # NOTATKI
         self.notes_chance = 0.1
-        self.last_platform_notes = False
 
         # Inicjowanie
         g.init()
         self.text_font = g.font.Font(g.font.get_default_font(), 40)
         #self.background = g.image.load(os.path.join('models', 'bground.png'))
 
-        self.screen = g.display.set_mode(self.resolution, g.FULLSCREEN)
+        self.screen = g.display.set_mode(self.resolution)
+        self.world = World()
+
+        self.new_game()
+
+
+    def new_game(self):
+        self.game_state = 'RUN'
+        self.time = 120
         self.camera = Camera(self.screen, 250 - self.resolution[0] / 2, 0,
                 self.resolution[0], self.resolution[1])
+
+        platform_position = Vector2(100, self.platform_range[0])
+        self.last_platform = platform_position
+
+        # WROGOWIE
+        self.last_platform_enemy = False
+
+        # NOTATKI
+        self.last_platform_notes = False
 
         self.tps_clock = g.time.Clock()
         self.tps_delta = 0.0
         self.sec = 0.0
 
         self.player = Player(self)
-
-        self.world = World()
+        self.world.ragnarok()
         self.world.add_body(self.player)
         self.world.add_body(Platform(self, self.last_platform))
 
@@ -80,6 +86,8 @@ class Game(object):
                 #self.screen.blit(self.background, (0, 0))
                 self.screen.fill((0, 0, 0))
 
+                self.draw()
+
                 # wyswietlane wyniku
                 score_text = self.text_font.render("SCORE: " + str(self.player.papers), True, self.text_color)
                 self.screen.blit(score_text, (20, 20))
@@ -91,8 +99,6 @@ class Game(object):
                 # wyświetlanie życia
                 health_text = self.text_font.render('HP: ' + str(self.player.health), True, self.text_color)
                 self.screen.blit(health_text, (self.resolution[0] / 2 - 50, 20))
-
-                self.draw()
             else:
                 self.screen.fill((0, 0, 0))
                 over_text = self.text_font.render('GAME OVER', True, self.text_color)
@@ -103,8 +109,7 @@ class Game(object):
 
                 for event in g.event.get():
                     if event.type == g.KEYDOWN and event.key == g.K_SPACE:
-                        self.game_state = 'RUN'
-                        self.__init__()
+                        self.new_game()
                     if event.type == g.QUIT or (event.type == g.KEYDOWN and event.key == g.K_ESCAPE):
                         sys.exit(0)
 

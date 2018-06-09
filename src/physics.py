@@ -120,6 +120,11 @@ class World(object):
         else:
             self.kill.append(body)
 
+    def ragnarok(self):
+        self.bodies = []
+        self.kill = []
+        self.updating = False
+
     def update(self, dt):
         self.updating = True
 
