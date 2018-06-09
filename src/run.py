@@ -22,6 +22,7 @@ class Game(object):
         self.gravity = 1800
         self.time = 120
         self.text_color = (119, 136, 153)  # szary
+        self.game_state = 'RUN'
 
         # PLATFORMY
         self.platform_width = 300
@@ -46,7 +47,7 @@ class Game(object):
         self.text_font = g.font.Font(g.font.get_default_font(), 40)
         #self.background = g.image.load(os.path.join('models', 'bground.png'))
 
-        self.screen = g.display.set_mode(self.resolution)
+        self.screen = g.display.set_mode(self.resolution, g.FULLSCREEN)
         self.camera = Camera(self.screen, 250 - self.resolution[0] / 2, 0,
                 self.resolution[0], self.resolution[1])
 
@@ -74,24 +75,39 @@ class Game(object):
                 self.update(self.tps_delta)
                 self.tps_delta -= 1 / self.tps
 
+            if self.game_state == 'RUN':
+                # Tło
+                #self.screen.blit(self.background, (0, 0))
+                self.screen.fill((0, 0, 0))
 
-            # Tło
-            #self.screen.blit(self.background, (0, 0))
-            self.screen.fill((0, 0, 0))
+                # wyswietlane wyniku
+                score_text = self.text_font.render("SCORE: " + str(self.player.papers), True, self.text_color)
+                self.screen.blit(score_text, (20, 20))
 
-            # wyswietlane wyniku
-            score_text = self.text_font.render("SCORE: " + str(self.player.papers), True, self.text_color)
-            self.screen.blit(score_text, (20, 20))
+                # wyświetlanie czasu
+                time_text = self.text_font.render('TIME: ' + str(self.time), True, self.text_color)
+                self.screen.blit(time_text, (self.resolution[0] - 220, 20))
 
-            # wyświetlanie czasu
-            time_text = self.text_font.render('TIME: ' + str(self.time), True, self.text_color)
-            self.screen.blit(time_text, (self.resolution[0] - 220, 20))
+                # wyświetlanie życia
+                health_text = self.text_font.render('HP: ' + str(self.player.health), True, self.text_color)
+                self.screen.blit(health_text, (self.resolution[0] / 2 - 50, 20))
 
-            # wyświetlanie życia
-            health_text = self.text_font.render('HP: ' + str(self.player.health), True, self.text_color)
-            self.screen.blit(health_text, (self.resolution[0] / 2 - 50, 20))
+                self.draw()
+            else:
+                self.screen.fill((0, 0, 0))
+                over_text = self.text_font.render('GAME OVER', True, self.text_color)
+                self.screen.blit(over_text, (self.resolution[0] / 2 - 100, self.resolution[1] / 2 - 100))
 
-            self.draw()
+                replay_text = self.text_font.render('Press SPACE to play again!', True, self.text_color)
+                self.screen.blit(replay_text, (self.resolution[0] / 2 - 220, self.resolution[1] / 2))
+
+                for event in g.event.get():
+                    if event.type == g.KEYDOWN and event.key == g.K_SPACE:
+                        self.game_state = 'RUN'
+                        self.__init__()
+                    if event.type == g.QUIT or (event.type == g.KEYDOWN and event.key == g.K_ESCAPE):
+                        sys.exit(0)
+
             g.display.update()
 
 
@@ -101,6 +117,10 @@ class Game(object):
         if self.sec >= 1.0:
             self.time -= 1
             self.sec = 0.0
+
+        # GAME OVER
+        if self.player.health <= 0 or self.player.position[1] > self.resolution[1]:
+            self.game_state = 'OVER'
 
         # generowanie platform
         if self.camera.position[0] + self.resolution[0] > self.last_platform[0] - self.platform_width:
