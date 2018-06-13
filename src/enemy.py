@@ -13,7 +13,7 @@ class Enemy(Body):
 
         self.on_ground = False
 
-        dir = random.randint(0, 1)
+        dir = random.randint(-1, 1)
         self.moving = dir
 
         shape = Bbox(x, y, self.width, self.height)

@@ -37,7 +37,7 @@ class Game(object):
         self.text_font = g.font.Font(g.font.get_default_font(), 40)
         #self.background = g.image.load(os.path.join('models', 'bground.png'))
 
-        self.screen = g.display.set_mode(self.resolution)
+        self.screen = g.display.set_mode(self.resolution, g.FULLSCREEN)
         self.world = World()
 
         self.new_game()
@@ -45,7 +45,8 @@ class Game(object):
 
     def new_game(self):
         self.game_state = 'RUN'
-        self.time = 120
+        self.time = 45
+        self.max_notes = 10
         self.camera = Camera(self.screen, 250 - self.resolution[0] / 2, 0,
                 self.resolution[0], self.resolution[1])
 
@@ -89,7 +90,8 @@ class Game(object):
                 self.draw()
 
                 # wyswietlane wyniku
-                score_text = self.text_font.render("SCORE: " + str(self.player.papers), True, self.text_color)
+                score_text = self.text_font.render("SCORE: " + str(self.player.papers) + '/' + str(self.max_notes),
+                                                   True, self.text_color)
                 self.screen.blit(score_text, (20, 20))
 
                 # wyświetlanie czasu
@@ -100,19 +102,40 @@ class Game(object):
                 health_text = self.text_font.render('HP: ' + str(self.player.health), True, self.text_color)
                 self.screen.blit(health_text, (self.resolution[0] / 2 - 50, 20))
             else:
-                self.screen.fill((0, 0, 0))
-                over_text = self.text_font.render('GAME OVER', True, self.text_color)
-                self.screen.blit(over_text, (self.resolution[0] / 2 - 100, self.resolution[1] / 2 - 100))
-
-                replay_text = self.text_font.render('Press SPACE to play again!', True, self.text_color)
-                self.screen.blit(replay_text, (self.resolution[0] / 2 - 220, self.resolution[1] / 2))
-
                 for event in g.event.get():
                     if event.type == g.KEYDOWN and event.key == g.K_SPACE:
                         self.new_game()
                     if event.type == g.QUIT or (event.type == g.KEYDOWN and event.key == g.K_ESCAPE):
                         sys.exit(0)
 
+                if self.game_state == 'OVER':
+                    self.screen.fill((0, 0, 0))
+                    over_text = self.text_font.render('GAME OVER', True, self.text_color)
+                    self.screen.blit(over_text, (self.resolution[0] / 2 - 100, self.resolution[1] / 2 - 100))
+
+                    replay_text = self.text_font.render('Press SPACE to play again!', True, self.text_color)
+                    self.screen.blit(replay_text, (self.resolution[0] / 2 - 220, self.resolution[1] / 2))
+
+                if self.game_state == 'WIN':
+                    self.screen.fill((0, 0, 0))
+                    if self.player.papers == 6:
+                        degree = 3.0
+                    elif self.player.papers == 7:
+                        degree = 3.5
+                    elif self.player.papers == 8:
+                        degree = 4.0
+                    elif self.player.papers == 9:
+                        degree = 4.5
+                    elif self.player.papers == 10:
+                        degree = 5.0
+                    else:
+                        degree = 2.0
+
+                    win_text = self.text_font.render('Your degree: ' + str(degree), True, self.text_color)
+                    self.screen.blit(win_text, (self.resolution[0] / 2 - 130, self.resolution[1] / 2 - 100))
+
+                    replay_text = self.text_font.render('Press SPACE to play again!', True, self.text_color)
+                    self.screen.blit(replay_text, (self.resolution[0] / 2 - 220, self.resolution[1] / 2))
             g.display.update()
 
 
@@ -126,6 +149,10 @@ class Game(object):
         # GAME OVER
         if self.player.health <= 0 or self.player.position[1] > self.resolution[1]:
             self.game_state = 'OVER'
+
+        # WIN
+        if self.time <= 0 or self.player.papers == self.max_notes:
+            self.game_state = 'WIN'
 
         # generowanie platform
         if self.camera.position[0] + self.resolution[0] > self.last_platform[0] - self.platform_width:
